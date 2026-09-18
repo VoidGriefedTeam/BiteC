@@ -1,15 +1,14 @@
 {
-  "version": 6,
-  "configurePresets": [
-    {
-      "name": "ninja-debug",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_PREFIX_PATH": "E:/zlib-install;E:/zstd-install;E:/libxml2-install",
-        "LLVM_DIR": "C:/Program Files/LLVM/lib/cmake/llvm"
-      }
-    }
-  ]
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "ninja-debug",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "LLVM_DIR": "C:/Program Files/LLVM/lib/cmake/llvm"
+            }
+        }
+    ]
 }

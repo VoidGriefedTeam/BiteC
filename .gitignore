@@ -72,11 +72,6 @@ Desktop.ini
 *.bak
 *~
 
-# Local dependency installations
-
-zlib-install/
-zstd-install/
-libxml2-install/
 
 # Local archives
 
