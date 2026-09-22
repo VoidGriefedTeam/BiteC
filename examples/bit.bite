@@ -1,0 +1,4 @@
+_INT &a ;
+&a _VAL 10 ;
+PRINT "Hello World --By VoidGriefed" ;
+PRINT &a ;

@@ -1,17 +1,32 @@
 #pragma once
 
-#include <sstream>
 #include <string>
 #include <vector>
-#include <fmt/color.h>
-#include <unordered_set>
-#include <CompilerUtils/include/CompilerUtils.hpp>
+#include <unordered_map>
 
-class Translator
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+
+#include <CompilerUtils.hpp>
+
+class Translator 
 {
     public:
-    void translate(const std::vector<std::string>& stream);
+        Translator();
+        void translate(const std::vector<std::string>& stream);
+        llvm::Module& get_module();
     private:
-    std::string detect_intent(const std::vector<std::string>& words);
-    void LLVMCompile();
+        llvm::LLVMContext context;
+        llvm::IRBuilder<> builder;
+        std::unique_ptr<llvm::Module> module;
+
+        std::unordered_map<std::string, llvm::Value*> llvm_variables;
+
+
+        void var_create(const std::vector<std::string>& line);
+        void var_fill(const std::vector<std::string>& line);
+        void print(const std::vector<std::string>& line);
+
 };
+

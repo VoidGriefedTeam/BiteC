@@ -59,8 +59,14 @@ add_subdirectory(
 
 add_executable(bitec
     src/main.cpp
-    src/lexer.cpp
-    src/translator.cpp
+    src/lexer/lexer.cpp
+    src/translator/translator.cpp
+    src/translator/var_create.cpp
+    src/translator/var_fill.cpp 
+    src/translator/io.cpp
+    src/compiler/object.cpp
+    src/compiler/linker.cpp
+
 )
 
 
@@ -81,8 +87,10 @@ endif()
 
 target_include_directories(bitec PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
-    "${LLVM_INCLUDE_DIRS}"
     "${CMAKE_SOURCE_DIR}/THIRD_PARTY"
+)
+target_include_directories(bitec SYSTEM PRIVATE
+    "${LLVM_INCLUDE_DIR}"
 )
 
 
@@ -93,6 +101,15 @@ target_include_directories(bitec PRIVATE
 llvm_map_components_to_libnames(LLVM_LIBS
     Core
     Support
+    AsmParser
+    Target
+    TargetParser
+    MC
+    MCParser
+    MCDisassembler
+    CodeGen
+    X86
+    AArch64
 )
 
 
@@ -103,4 +120,15 @@ llvm_map_components_to_libnames(LLVM_LIBS
 target_link_libraries(bitec PRIVATE
     CompilerUtils
     ${LLVM_LIBS}
+)
+
+# Copy runtime DLLs beside bitec.exe
+add_custom_command(TARGET bitec POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "E:/zlib-install/bin/z.dll"
+        "$<TARGET_FILE_DIR:bitec>"
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "E:/zstd-install/bin/zstd.dll"
+        "$<TARGET_FILE_DIR:bitec>"
 )
