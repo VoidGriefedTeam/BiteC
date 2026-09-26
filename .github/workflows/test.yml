@@ -17,38 +17,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fix Winget Throttling
-        run: |
-          # Ensure the settings directory exists
-          $settingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState"
-          if (!(Test-Path $settingsPath)) { New-Item -ItemType Directory -Force -Path $settingsPath }
-          
-          # Write the network downloader configuration directly to settings.json
-          $settingsJson = @{
-              '$schema' = 'https://aka.ms'
-              'network' = @{
-                  'downloader' = 'wininet'
-              }
-          } | ConvertTo-Json -Depth 5
-          
-          Set-Content -Path "$settingsPath\settings.json" -Value $settingsJson -Force
-            
-      - name: Install LLVM
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "21.1.8"
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Check Toolchain
         shell: pwsh
         run: |
-          winget install LLVM.LLVM --silent --accept-source-agreements --accept-package-agreements
+          cl
+          clang --version
+          lld-link --version
+          cmake --version
+          ninja --version
 
-      - name: Compile Chewer
+      - name: Build Chewer
+        shell: pwsh
         run: |
           cmake --preset ninja-debug
-          cmake --build --preset ninja-debug 
+          cmake --build --preset ninja-debug
 
-      - name: Test Chewer
+      - name: Test Windows Target
         shell: pwsh
         run: |
           cd build
 
-          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.obj" windows
+          .\bitec.exe "$env:ROOT\examples\bit.bite" windows -o "$env:ROOT\build\bit.obj"
 
           $output = "3" | .\bit.exe
 
@@ -58,8 +55,9 @@ jobs:
               throw "Expected 3, got $output"
           }
 
+
   test-linux:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
       ROOT: ${{ github.workspace }}
@@ -68,27 +66,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Compile Chewer
-        shell: pwsh
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build cmake clang lld
+
+      - name: Check Toolchain
+        run: |
+          clang --version
+          lld --version
+          cmake --version
+          ninja --version
+
+      - name: Build Chewer
         run: |
           cmake -S . -B build -G Ninja
           cmake --build build
 
       - name: Test Linux Target
-        shell: pwsh
         run: |
           cd build
 
-          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.o" linux64
+          ./bitec "$ROOT/examples/bit.bite" linux64 -o "$ROOT/build/bit.o"
 
-          $linuxPath = wsl wslpath -a "$env:ROOT/build/bit"
+          chmod +x "$ROOT/build/bit"
 
-          Write-Host "Linux executable: $linuxPath"
+          output=$(echo 3 | "$ROOT/build/bit")
 
-          $output = wsl bash -c "echo 3 | '$linuxPath'"
+          echo "Program returned: $output"
 
-          Write-Host "Program returned: $output"
-
-          if ($output.Trim() -ne "3") {
-              throw "Expected 3, got $output"
-          }
+          if [ "$(echo "$output" | xargs)" != "3" ]; then
+            echo "Expected 3, got $output"
+            exit 1
+          fi
