@@ -7,6 +7,7 @@
 ![Backend](https://shields.io/badge/backend-LLVM-262D3A?logo=llvm&logoColor=white&style=flat-square)
 ![Build System](https://shields.io/badge/build-CMake-064F8C?logo=cmake&logoColor=white&style=flat-square)
 ![License](https://shields.io/badge/license-GPLv3--with--runtime--exception-blue?style=flat-square)
+[![Chewer Test](https://github.com/VoidGriefedTeam/BiteC/actions/workflows/test.yml/badge.svg?event=check_run)](https://github.com/VoidGriefedTeam/BiteC/actions/workflows/test.yml)
 
 > **⚠️ Development Status**
 > Bite™ and its compiler, Chewer, are under active development. Syntax, semantics, and CLI behavior are subject to change without notice.
