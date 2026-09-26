@@ -21,7 +21,24 @@ jobs:
         uses: KyleMayes/install-llvm-action@v2
         with:
           version: "21.1.8"
-      
+      - name: Find LLVM CMake config
+        shell: pwsh
+        run: |
+          $config = Get-ChildItem "C:\Program Files\LLVM" `
+            -Recurse `
+            -Filter "LLVMConfig.cmake" `
+            -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+
+          if (-not $config) {
+              throw "LLVMConfig.cmake was not found!"
+          }
+
+          Write-Host "LLVMConfig.cmake found at:"
+          Write-Host $config.FullName
+
+          Write-Host "LLVM_DIR:"
+          Write-Host $config.DirectoryName
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
       
