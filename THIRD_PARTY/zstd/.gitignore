@@ -28,7 +28,6 @@ projects/
 bin/
 .buckd/
 buck-out/
-build-*
 *.gcda
 cmakebuild/
 cmake-build/
