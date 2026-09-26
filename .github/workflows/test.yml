@@ -16,6 +16,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Fix Winget Throttling
+        run: |
+          # Inject the wininet downloader option directly into winget settings
+          winget settings --import "{ \"network\": { \"downloader\": \"wininet\" } }"
       
       - name: Install LLVM
         shell: pwsh
