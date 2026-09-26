@@ -24,8 +24,8 @@ jobs:
 
       - name: Compile Chewer
         run: |
-          cmake -S . -B build -G Ninja
-          cmake --build build
+          cmake --preset ninja-debug
+          cmake --build --preset ninja-debug 
 
       - name: Test Chewer
         shell: pwsh
