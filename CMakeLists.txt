@@ -97,24 +97,20 @@ message(STATUS
 )
 
 
-# ============================================================
-# Find actual zlib library
-# ============================================================
-
 set(ZLIB_LIB_DIR
     "${ZLIB_INSTALL_DIR}/lib"
 )
 
-if(EXISTS "${ZLIB_LIB_DIR}/libzsd.lib")
+if(EXISTS "${ZLIB_LIB_DIR}/zsd.lib")
 
     set(ZLIB_LIB
-        "${ZLIB_LIB_DIR}/libzsd.lib"
+        "${ZLIB_LIB_DIR}/zsd.lib"
     )
 
-elseif(EXISTS "${ZLIB_LIB_DIR}/libzd.lib")
+elseif(EXISTS "${ZLIB_LIB_DIR}/zd.lib")
 
     set(ZLIB_LIB
-        "${ZLIB_LIB_DIR}/libzd.lib"
+        "${ZLIB_LIB_DIR}/zd.lib"
     )
 
 else()
