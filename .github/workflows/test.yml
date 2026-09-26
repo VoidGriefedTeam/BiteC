@@ -16,6 +16,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Install LLVM
+        shell: pwsh
+        run: |
+          winget install LLVM.LLVM --silent --accept-source-agreements --accept-package-agreements
 
       - name: Compile Chewer
         run: |
