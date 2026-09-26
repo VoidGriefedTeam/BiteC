@@ -102,6 +102,10 @@ namespace cutils
             {
             return "PRINT";
             }  
+        else if (words[1] == "_READ")
+        {
+            return "READ";
+        }
         else if (
         !words[1].empty() &&
         words[1][0] == '&' &&
@@ -112,8 +116,8 @@ namespace cutils
             auto type = cutils::get_type(words[0]);
             if (type == Type::Unknown)
             {
-                fmt::println(fg(fmt::color::red)| fmt::emphasis::bold, "Unknown Variable Type. Line{}", i);
-                fmt::println(fg(fmt::color::red)| fmt::emphasis::blink, "Unrecognized Variable Type :{}", words[0]);
+                fmt::println(fg(fmt::terminal_color::red)| fmt::emphasis::bold, "Unknown Variable Type. Line{}", i);
+                fmt::println(fg(fmt::terminal_color::red)| fmt::emphasis::blink, "Unrecognized Variable Type :{}", words[0]);
                 std::exit(1);
             }
             auto n = words[1].substr(1);
@@ -130,6 +134,10 @@ namespace cutils
         else if (words[0] == "PRINT" && words[2] == ";")
         {
             return "PRINT";
+        }
+        else if (words[1] == "_READ")
+        {
+            return "READ";
         }
         else
         {

@@ -1,28 +1,31 @@
 #include <linker.hpp>
 
-void Linker::link(const std::string& outputFile)
-            {
-                std::filesystem::path path(outputFile);
-                path.replace_extension(".exe");
-                fmt::print("Linking {}\n", outputFile);
-                std::string command = "lld-link \"" + outputFile +
-                                      "\" /subsystem:console /defaultlib:libcmt /out:\"" +
-                                      path.string() + "\"";
-                int result = std::system(command.c_str());
-                
-                if (result != 0)
-                {
-                    fmt::print(
-                        fg(fmt::color::red),
-                        "Linking failed ❌\n"
-                    );
+void Linker::link(
+    const std::string& outputFile,
+    const std::string& os
+)
+{
+    std::filesystem::path objectPath(outputFile);
+    std::filesystem::path outputPath = objectPath;
 
-                    std::exit(78);
-                }
-                fmt::print(
-                fg(fmt::color::green),
-                "Linked: {}\n",
-                path.string()
-                );
+    std::filesystem::path runtime =
+        std::filesystem::current_path() / "runtime" / os;
 
-            }
+    if (os == "windows")
+    {
+        outputPath.replace_extension(".exe");
+        winlink(outputPath, objectPath, runtime);
+    }
+    else if (os == "linux64")
+    {
+        outputPath.replace_extension("");
+        linlink(outputPath, objectPath, runtime);
+    }
+    else {
+    fmt::print(
+        fg(fmt::terminal_color::red),
+        "Unsupported target OS: {}\n",
+        os
+    );
+    }   
+}

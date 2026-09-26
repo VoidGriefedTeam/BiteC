@@ -1,4 +1,11 @@
 _INT &a ;
 &a _VAL 10 ;
-PRINT "Hello World --By VoidGriefed" ;
+
+_STR &msg ;
+&msg _VAL "Hello World --By VoidGriefed" ;
+
+PRINT &msg ;
+PRINT &a ;
+
+&a _READ ;
 PRINT &a ;

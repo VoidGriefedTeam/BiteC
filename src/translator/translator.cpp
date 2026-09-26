@@ -22,6 +22,17 @@ Translator::Translator()
         "entry",
         mainFunction
     );
+    llvm::FunctionType* scanfType =
+    llvm::FunctionType::get(
+        builder.getInt32Ty(),
+        {builder.getInt8Ty()->getPointerTo()},
+        true
+    );
+
+    scanfFunc = module->getOrInsertFunction(
+    "scanf",
+    scanfType
+    );
 
     builder.SetInsertPoint(entry);
     
@@ -36,7 +47,8 @@ void Translator::translate(const std::vector<std::string>& stream)
         auto intent = cutils::detect_intent(line_words[i], i);
         if (intent == "VAR_CR")
         {
-           var_create(line_words[i]);
+            
+            var_create(line_words[i]);  
         }
         else if (intent == "VAR_FILL")
         {
@@ -44,9 +56,19 @@ void Translator::translate(const std::vector<std::string>& stream)
         }
         else if (intent == "PRINT")
         {
+            
             print(line_words[i]);
         }
-        module->print(llvm::outs(), nullptr);
+        else if (intent == "READ")
+        {
+            
+            read(line_words[i]);
+        }
+        else
+        {
+            
+        }
+
     }
     builder.CreateRet(builder.getInt32(0));
 }

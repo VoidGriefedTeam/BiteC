@@ -8,6 +8,7 @@ void Translator::var_create(const std::vector<std::string>& line)
     {
         llvm_variables[name] =
         builder.CreateAlloca(builder.getInt32Ty(), nullptr, name);
+
     }
     else if (type == Type::String)
     {

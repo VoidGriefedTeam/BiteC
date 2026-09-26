@@ -1,0 +1,73 @@
+name: Chewer Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-windows:
+    runs-on: windows-latest
+
+    env:
+      ROOT: ${{ github.workspace }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compile Chewer
+        run: |
+          cmake -S . -B build -G Ninja
+          cmake --build build
+
+      - name: Test Chewer
+        shell: pwsh
+        run: |
+          cd build
+
+          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.obj" windows
+
+          $output = "3" | .\bit.exe
+
+          Write-Host "Program returned: $output"
+
+          if ($output.Trim() -ne "3") {
+              throw "Expected 3, got $output"
+          }
+
+  test-linux:
+    runs-on: windows-latest
+
+    env:
+      ROOT: ${{ github.workspace }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compile Chewer
+        shell: pwsh
+        run: |
+          cmake -S . -B build -G Ninja
+          cmake --build build
+
+      - name: Test Linux Target
+        shell: pwsh
+        run: |
+          cd build
+
+          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.o" linux64
+
+          $linuxPath = wsl wslpath -a "$env:ROOT/build/bit"
+
+          Write-Host "Linux executable: $linuxPath"
+
+          $output = wsl bash -c "echo 3 | '$linuxPath'"
+
+          Write-Host "Program returned: $output"
+
+          if ($output.Trim() -ne "3") {
+              throw "Expected 3, got $output"
+          }

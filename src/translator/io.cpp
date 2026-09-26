@@ -80,3 +80,41 @@ void Translator::print(const std::vector<std::string>& line)
         );
     }
 }
+
+void Translator::read(const std::vector<std::string>& line)
+{
+    auto name = line[0].substr(1);
+    auto type = variables[name].type;
+    if (type == Type::Int){
+        llvm::Value* variable = llvm_variables[name];
+
+        auto* format = builder.CreateGlobalString(
+            "%d",
+            "scanf_fmt",
+            0,
+            module.get()
+        );
+
+        auto* formatPtr = builder.CreateInBoundsGEP(
+            format->getValueType(),
+            format,
+            {
+                builder.getInt32(0),
+                builder.getInt32(0)
+            }
+        );
+
+        builder.CreateCall(
+            scanfFunc,
+            {
+                formatPtr,
+                variable
+            }
+        );
+    }
+    else
+    {
+        fmt::println(fg(fmt::color::red), "_READ with this type not allowed");
+        std::exit(78);
+    }
+}

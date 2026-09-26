@@ -21,9 +21,9 @@ void ObjectCompiler::generate(
     std::string target_triple_str;
     if (ost == "windows")
     {
-        target_triple_str = "x86_64-pc-windows-msvc";
+        target_triple_str = "x86_64-w64-windows-gnu";
     }
-    else if (ost == "linux")
+    else if (ost == "linux64")
     {
         target_triple_str = "x86_64-pc-linux-gnu";
     }
@@ -87,10 +87,10 @@ void ObjectCompiler::generate(
     );
 
     std::error_code errorCode;
-
-    llvm::outs() << "Writing object file to: "
-             << objpath
-             << '\n';
+    if (Logger::verbose){
+    llvm::outs() << objpath
+                << '\n';
+    }
     llvm::raw_fd_ostream objectFile(
         objpath,
         errorCode,

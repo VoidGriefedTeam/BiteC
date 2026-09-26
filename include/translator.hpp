@@ -21,12 +21,15 @@ class Translator
         llvm::IRBuilder<> builder;
         std::unique_ptr<llvm::Module> module;
 
+        llvm::FunctionCallee scanfFunc;
+
         std::unordered_map<std::string, llvm::Value*> llvm_variables;
 
 
         void var_create(const std::vector<std::string>& line);
         void var_fill(const std::vector<std::string>& line);
         void print(const std::vector<std::string>& line);
+        void read(const std::vector<std::string>& line);
 
 };
 

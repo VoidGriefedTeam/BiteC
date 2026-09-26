@@ -13,6 +13,7 @@
 #include <llvm/IR/LegacyPassManager.h>
 #include <llvm/TargetParser/Triple.h>
 
+#include <logger.hpp>
 
 
 class ObjectCompiler

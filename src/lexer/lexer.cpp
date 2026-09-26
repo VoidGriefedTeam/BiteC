@@ -7,7 +7,7 @@ std::ifstream Lexer::openFile(const std::string& FullPath)
     if (!file.is_open())
     {
         fmt::print(
-            fg(fmt::color::red) | fmt::emphasis::bold,
+            fg(fmt::terminal_color::red) | fmt::emphasis::bold,
             "ERROR: could not open file: {}",
             FullPath
         );
