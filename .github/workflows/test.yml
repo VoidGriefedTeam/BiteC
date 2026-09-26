@@ -19,9 +19,20 @@ jobs:
 
       - name: Fix Winget Throttling
         run: |
-          # Inject the wininet downloader option directly into winget settings
-          winget settings --import "{ \"network\": { \"downloader\": \"wininet\" } }"
-      
+          # Ensure the settings directory exists
+          $settingsPath = "$env:LOCALAPPDATA\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState"
+          if (!(Test-Path $settingsPath)) { New-Item -ItemType Directory -Force -Path $settingsPath }
+          
+          # Write the network downloader configuration directly to settings.json
+          $settingsJson = @{
+              '$schema' = 'https://aka.ms'
+              'network' = @{
+                  'downloader' = 'wininet'
+              }
+          } | ConvertTo-Json -Depth 5
+          
+          Set-Content -Path "$settingsPath\settings.json" -Value $settingsJson -Force
+            
       - name: Install LLVM
         shell: pwsh
         run: |
