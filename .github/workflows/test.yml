@@ -21,31 +21,38 @@ jobs:
         uses: KyleMayes/install-llvm-action@v2
         with:
           version: "21.1.8"
-
+      
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Check Toolchain
+      
+      - name: Check MSVC
         shell: pwsh
         run: |
           cl
-          clang --version
-          lld-link --version
-          cmake --version
-          ninja --version
 
       - name: Build Chewer
         shell: pwsh
         run: |
           cmake --preset ninja-debug
-          cmake --build --preset ninja-debug
 
-      - name: Test Windows Target
+      - name: Inspect zlib
+        shell: pwsh
+        run: |
+          Write-Host "=== zlib install directory ==="
+          Get-ChildItem "$env:ROOT\build\zlib-install" -Recurse |
+            Select-Object FullName
+
+      - name: Build Chewer
+        shell: pwsh
+        run: |
+          cmake --build --preset ninja-debug
+      
+      - name: Test Chewer
         shell: pwsh
         run: |
           cd build
 
-          .\bitec.exe "$env:ROOT\examples\bit.bite" windows -o "$env:ROOT\build\bit.obj"
+          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.obj" windows
 
           $output = "3" | .\bit.exe
 
@@ -55,9 +62,8 @@ jobs:
               throw "Expected 3, got $output"
           }
 
-
   test-linux:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     env:
       ROOT: ${{ github.workspace }}
@@ -66,36 +72,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Build Chewer
+        shell: pwsh
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build cmake clang lld
+          cmake --preset ninja-debug
 
-      - name: Check Toolchain
+      - name: Inspect zlib
+        shell: pwsh
         run: |
-          clang --version
-          lld --version
-          cmake --version
-          ninja --version
+          Write-Host "=== zlib install directory ==="
+          Get-ChildItem "$env:ROOT\build\zlib-install" -Recurse |
+            Select-Object FullName
 
       - name: Build Chewer
+        shell: pwsh
         run: |
-          cmake -S . -B build -G Ninja
-          cmake --build build
+          cmake --build --preset ninja-debug
 
       - name: Test Linux Target
+        shell: pwsh
         run: |
           cd build
 
-          ./bitec "$ROOT/examples/bit.bite" linux64 -o "$ROOT/build/bit.o"
+          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.o" linux64
 
-          chmod +x "$ROOT/build/bit"
+          $linuxPath = wsl wslpath -a "$env:ROOT/build/bit"
 
-          output=$(echo 3 | "$ROOT/build/bit")
+          Write-Host "Linux executable: $linuxPath"
 
-          echo "Program returned: $output"
+          $output = wsl bash -c "echo 3 | '$linuxPath'"
 
-          if [ "$(echo "$output" | xargs)" != "3" ]; then
-            echo "Expected 3, got $output"
-            exit 1
-          fi
+          Write-Host "Program returned: $output"
+
+          if ($output.Trim() -ne "3") {
+              throw "Expected 3, got $output"
+          }
