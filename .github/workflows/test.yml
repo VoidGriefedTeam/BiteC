@@ -29,6 +29,11 @@ jobs:
         shell: pwsh
         run: |
           cl
+      
+      - name: Build Chewer
+        shell: pwsh
+        run: |
+          $env:LLVM_DIR = "C:\Program Files\LLVM\lib\cmake\llvm"
 
       - name: Build Chewer
         shell: pwsh
