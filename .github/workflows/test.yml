@@ -44,7 +44,7 @@ jobs:
       - name: Find LLVM CMake config
         shell: pwsh
         run: |
-          $config = Get-ChildItem "C:\Program Files\LLVM" `
+          $config = Get-ChildItem "C:\LLVM" `
             -Recurse `
             -Filter "LLVMConfig.cmake" `
             -ErrorAction SilentlyContinue |
