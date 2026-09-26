@@ -1,21 +1,19 @@
 {
   "version": 6,
-
   "configurePresets": [
     {
       "name": "ninja-debug",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
-
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_C_COMPILER": "cl.exe",
         "CMAKE_CXX_COMPILER": "cl.exe",
-        "CMAKE_LINKER": "C:/Program Files/LLVM/bin/lld-link.exe"
+        "CMAKE_LINKER": "C:/Program Files/LLVM/bin/lld-link.exe",
+        "LLVM_DIR": "C:/Program Files/LLVM/lib/cmake/llvm"
       }
     }
   ],
-
   "buildPresets": [
     {
       "name": "ninja-debug",
