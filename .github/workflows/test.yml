@@ -32,31 +32,6 @@ jobs:
             -C "C:\LLVM" `
             --strip-components=1
 
-          Add-Content $env:GITHUB_PATH "C:\LLVM\bin"
-
-          Write-Host "LLVM installed:"
-          clang --version
-          lld-link --version
-
-          Write-Host "`nLLVMConfig.cmake:"
-          Get-ChildItem "C:\LLVM" -Recurse -Filter "LLVMConfig.cmake" |
-            Select-Object -ExpandProperty FullName
-
-      - name: Install LLVM development package
-        shell: pwsh
-        run: |
-          $url = "https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/clang+llvm-21.1.8-x86_64-pc-windows-msvc.tar.xz"
-
-          Invoke-WebRequest `
-            -Uri $url `
-            -OutFile "$env:RUNNER_TEMP\llvm.tar.xz"
-
-          New-Item -ItemType Directory -Force -Path "C:\LLVM" | Out-Null
-
-          tar -xf "$env:RUNNER_TEMP\llvm.tar.xz" `
-            -C "C:\LLVM" `
-            --strip-components=1
-
           $env:PATH = "C:\LLVM\bin;$env:PATH"
           Add-Content $env:GITHUB_PATH "C:\LLVM\bin"
 
