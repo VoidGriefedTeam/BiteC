@@ -1,3 +1,4 @@
 # Force LF line endings for every file
-
 * text eol=lf
+runtime/**/*.exe filter=lfs diff=lfs merge=lfs -text
+runtime/**/*.dll filter=lfs diff=lfs merge=lfs -text
