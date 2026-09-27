@@ -101,16 +101,18 @@ set(ZLIB_LIB_DIR
     "${ZLIB_INSTALL_DIR}/lib"
 )
 
-if(EXISTS "${ZLIB_LIB_DIR}/zsd.lib")
+if(EXISTS "${ZLIB_LIB_DIR}/libzsd.lib")
 
-    set(ZLIB_LIB
-        "${ZLIB_LIB_DIR}/zsd.lib"
+    set(
+        ZLIB_LIB
+        "${ZLIB_LIB_DIR}/libzsd.lib"
     )
 
-elseif(EXISTS "${ZLIB_LIB_DIR}/zd.lib")
+elseif(EXISTS "${ZLIB_LIB_DIR}/libzd.lib")
 
-    set(ZLIB_LIB
-        "${ZLIB_LIB_DIR}/zd.lib"
+    set(
+        ZLIB_LIB
+        "${ZLIB_LIB_DIR}/libzd.lib"
     )
 
 else()
@@ -193,7 +195,8 @@ message(STATUS
 # Find actual zstd library
 # ============================================================
 
-set(ZSTD_LIB
+set(
+    ZSTD_LIB
     "${ZSTD_INSTALL_DIR}/lib/zstd.lib"
 )
 
@@ -212,30 +215,15 @@ message(STATUS
 
 
 # ============================================================
-# LLVM
+# Create zlib target for LLVM
 # ============================================================
 
-find_package(LLVM REQUIRED CONFIG)
+if(NOT TARGET ZLIB::ZLIB)
 
-message(STATUS
-    "Found LLVM ${LLVM_VERSION}"
-)
-
-message(STATUS
-    "LLVM include directories: ${LLVM_INCLUDE_DIRS}"
-)
-
-add_definitions(${LLVM_DEFINITIONS})
-
-
-# ============================================================
-# Fix LLVM's imported zlib target
-# ============================================================
-
-if(TARGET ZLIB::ZLIB)
-
-    message(STATUS
-        "Fixing LLVM ZLIB::ZLIB target"
+    add_library(
+        ZLIB::ZLIB
+        STATIC
+        IMPORTED
     )
 
     set_target_properties(
@@ -286,13 +274,15 @@ endif()
 
 
 # ============================================================
-# Fix LLVM's imported zstd target
+# Create zstd target for LLVM
 # ============================================================
 
-if(TARGET zstd::libzstd_static)
+if(NOT TARGET zstd::libzstd_static)
 
-    message(STATUS
-        "Fixing zstd::libzstd_static target"
+    add_library(
+        zstd::libzstd_static
+        STATIC
+        IMPORTED
     )
 
     set_target_properties(
@@ -340,6 +330,23 @@ if(TARGET zstd::libzstd_static)
     )
 
 endif()
+
+
+# ============================================================
+# LLVM
+# ============================================================
+
+find_package(LLVM REQUIRED CONFIG)
+
+message(STATUS
+    "Found LLVM ${LLVM_VERSION}"
+)
+
+message(STATUS
+    "LLVM include directories: ${LLVM_INCLUDE_DIRS}"
+)
+
+add_definitions(${LLVM_DEFINITIONS})
 
 
 # ============================================================
@@ -501,6 +508,7 @@ add_custom_command(
 
         "$<TARGET_FILE_DIR:bitec>"
 )
+
 
 # ============================================================
 # Copy runtime beside bitec.exe
