@@ -6,6 +6,8 @@
 #include <fmt/color.h>
 #include <logger.hpp>
 #include <process.h>
+#include <cerrno>
+#include <cstring>
 
 class Linker
 {

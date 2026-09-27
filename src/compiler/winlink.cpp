@@ -101,11 +101,10 @@ void Linker::winlink(const std::filesystem::path& outputPath
             fmt::print(
                 fg(fmt::terminal_color::red),
                 "Failed to start linker ❌\n"
-            );
-
-            fmt::print(
-                "errno: {}\n",
-                errno
+                "errno: {}\n"
+                "message: {}\n",
+                errno,
+                std::strerror(errno)
             );
 
             std::exit(78);
@@ -115,11 +114,7 @@ void Linker::winlink(const std::filesystem::path& outputPath
         {
             fmt::print(
                 fg(fmt::terminal_color::red),
-                "Linking failed ❌\n"
-            );
-
-            fmt::print(
-                "ld.lld exit code: {}\n",
+                "Linker exited with code: {}\n",
                 result
             );
 
