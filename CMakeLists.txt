@@ -97,25 +97,40 @@ message(STATUS
 )
 
 
-set(ZLIB_LIB_DIR
+# ============================================================
+# Find actual zlib library
+# ============================================================
+
+set(
+    ZLIB_LIB_DIR
     "${ZLIB_INSTALL_DIR}/lib"
 )
 
-if(EXISTS "${ZLIB_LIB_DIR}/libzsd.lib")
+find_library(
+    ZLIB_LIB
+    NAMES
+        zlib
+        libz
+        zd
+        zsd
+        libzd
+        libzsd
+    PATHS
+        "${ZLIB_LIB_DIR}"
+    NO_DEFAULT_PATH
+)
 
-    set(
-        ZLIB_LIB
-        "${ZLIB_LIB_DIR}/libzsd.lib"
+if(NOT ZLIB_LIB)
+
+    message(STATUS "Contents of zlib lib directory:")
+
+    file(GLOB ZLIB_LIB_FILES
+        "${ZLIB_LIB_DIR}/*"
     )
 
-elseif(EXISTS "${ZLIB_LIB_DIR}/libzd.lib")
-
-    set(
-        ZLIB_LIB
-        "${ZLIB_LIB_DIR}/libzd.lib"
-    )
-
-else()
+    foreach(LIB_FILE ${ZLIB_LIB_FILES})
+        message(STATUS "  ${LIB_FILE}")
+    endforeach()
 
     message(FATAL_ERROR
         "Could not find zlib library in:\n"
@@ -123,6 +138,10 @@ else()
     )
 
 endif()
+
+message(STATUS
+    "BiteC zlib library: ${ZLIB_LIB}"
+)
 
 message(STATUS
     "BiteC zlib library: ${ZLIB_LIB}"
