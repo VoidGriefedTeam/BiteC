@@ -1,5 +1,13 @@
-# Runtime files
-!runtime/*
+# Runtime contains required prebuilt binaries
+!runtime/
+!runtime/**
+
+!runtime/**/*.exe
+!runtime/**/*.dll
+!runtime/**/*.lib
+!runtime/**/*.a
+!runtime/**/*.o
+!runtime/**/*.obj
 
 # Build directories
 
