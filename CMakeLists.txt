@@ -502,6 +502,23 @@ add_custom_command(
         "$<TARGET_FILE_DIR:bitec>"
 )
 
+# ============================================================
+# Copy runtime beside bitec.exe
+# ============================================================
+
+add_custom_command(
+    TARGET bitec
+    POST_BUILD
+
+    COMMAND
+        "${CMAKE_COMMAND}"
+        -E copy_directory
+
+        "${CMAKE_SOURCE_DIR}/runtime"
+
+        "$<TARGET_FILE_DIR:bitec>/runtime"
+)
+
 
 # ============================================================
 # Install BiteC
