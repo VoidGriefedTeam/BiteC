@@ -1,5 +1,5 @@
 # Runtime files
-!runtime/
+!runtime/*
 
 # Build directories
 
