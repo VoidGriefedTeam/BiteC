@@ -73,10 +73,11 @@ jobs:
         run: |
           $env:LLVM_DIR = "C:\Program Files\LLVM\lib\cmake\llvm"
 
-      - name: Build Chewer
+      - name: Configure Chewer
         shell: pwsh
         run: |
-          cmake --preset ninja-debug
+            $env:LLVM_DIR = "C:\LLVM\lib\cmake\llvm"
+            cmake --preset ninja-debug
 
       - name: Inspect zlib
         shell: pwsh
