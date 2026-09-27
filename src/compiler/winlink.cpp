@@ -68,17 +68,59 @@ void Linker::winlink(const std::filesystem::path& outputPath
             lld.string()
         );
 
+        if (!std::filesystem::exists(lld))
+        {
+            fmt::print(
+                fg(fmt::terminal_color::red),
+                "Linker not found: {}\n",
+                lld.string()
+            );
+
+            std::exit(78);
+        }
+
+        verbose(
+            "Running linker:\n"
+        );
+
+        for (const auto& arg : args)
+        {
+            verbose("{} ", arg);
+        }
+
+        verbose("\n");
+
         int result = _spawnv(
             _P_WAIT,
             lld.string().c_str(),
             argv.data()
         );
 
+        if (result == -1)
+        {
+            fmt::print(
+                fg(fmt::terminal_color::red),
+                "Failed to start linker ❌\n"
+            );
+
+            fmt::print(
+                "errno: {}\n",
+                errno
+            );
+
+            std::exit(78);
+        }
+
         if (result != 0)
         {
             fmt::print(
                 fg(fmt::terminal_color::red),
                 "Linking failed ❌\n"
+            );
+
+            fmt::print(
+                "ld.lld exit code: {}\n",
+                result
             );
 
             std::exit(78);
