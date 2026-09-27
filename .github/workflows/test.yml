@@ -161,7 +161,7 @@ jobs:
         run: |
           cd build
 
-          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.obj" windows
+          .\bitec.exe "$env:ROOT\examples\bit.bite" -o "$env:ROOT\build\bit.obj" windows --verbose
 
           $output = "3" | .\bit.exe
 
