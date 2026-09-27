@@ -41,6 +41,7 @@ jobs:
           Write-Host "`nLLVMConfig.cmake:"
           Get-ChildItem "C:\LLVM" -Recurse -Filter "LLVMConfig.cmake" |
             Select-Object -ExpandProperty FullName
+
       - name: Find LLVM CMake config
         shell: pwsh
         run: |
@@ -83,6 +84,15 @@ jobs:
           Write-Host "=== zlib install directory ==="
           Get-ChildItem "$env:ROOT\build\zlib-install" -Recurse |
             Select-Object FullName
+
+      - name: Diagnose DIA SDK reference
+        shell: pwsh
+        run: |
+          Write-Host "Searching generated CMake files for diaguids.lib..."
+
+          Get-ChildItem build -Recurse -File -ErrorAction SilentlyContinue |
+            Select-String -Pattern "diaguids.lib|Visual Studio[\\/]+2019" -ErrorAction SilentlyContinue |
+            Select-Object Path, LineNumber, Line
 
       - name: Build Chewer
         shell: pwsh
