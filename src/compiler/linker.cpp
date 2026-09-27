@@ -1,4 +1,24 @@
 #include <linker.hpp>
+#include <windows.h>
+
+std::filesystem::path executable_directory()
+{
+    wchar_t buffer[MAX_PATH];
+
+    DWORD length = GetModuleFileNameW(
+        nullptr,
+        buffer,
+        MAX_PATH
+    );
+
+    if (length == 0)
+        std::exit(78);
+
+    return std::filesystem::path(
+        buffer,
+        buffer + length
+    ).parent_path();
+}
 
 void Linker::link(
     const std::string& outputFile,
@@ -9,7 +29,7 @@ void Linker::link(
     std::filesystem::path outputPath = objectPath;
 
     std::filesystem::path runtime =
-        std::filesystem::current_path() / "runtime" / os;
+            executable_directory() / "runtime" / os;
 
     if (os == "windows")
     {
