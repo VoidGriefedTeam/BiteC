@@ -98,11 +98,6 @@ jobs:
         shell: pwsh
         run: |
           cl
-      
-      - name: Build Chewer
-        shell: pwsh
-        run: |
-          $env:LLVM_DIR = "C:\Program Files\LLVM\lib\cmake\llvm"
 
       - name: Configure Chewer
         shell: pwsh
@@ -126,16 +121,17 @@ jobs:
             Select-String -Pattern "diaguids.lib|Visual Studio[\\/]+2019" -ErrorAction SilentlyContinue |
             Select-Object Path, LineNumber, Line
 
+      - name: Build Chewer
+        shell: pwsh
+        run: |
+          cmake --build --preset ninja-debug
+
       - name: Inspect bundled runtime
         shell: pwsh
         run: |
           Get-ChildItem "$env:ROOT\build\runtime\windows" -Recurse -File |
             Select-Object FullName, Length
 
-      - name: Build Chewer
-        shell: pwsh
-        run: |
-          cmake --build --preset ninja-debug
 
       - name: Test bundled linker
         shell: pwsh
